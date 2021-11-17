@@ -8,7 +8,7 @@ float angle=0.0;
 // actual vector representing the camera's direction
 float lx=0.0f,lz=-1.0f,ly=0.0f;
 // XZ position of the camera
-float x=2.0f,z=3.0f,y=1.0f;
+float x=4.0f,z=3.0f,y=2.0f;
 
 
 void drawHouse(void){
@@ -16,30 +16,30 @@ void drawHouse(void){
   glBegin( GL_POLYGON ); 
     glColor3f(1.0f,0.0f,0.0f); 
     glVertex3f(0.0f,0.0f,0.0f); 
-    glVertex3f(0.0f,4.0f,0.0f); 
-    glVertex3f(2.5f,5.0f,0.0f); 
-    glVertex3f(5.0f,4.0f,0.0f); 
-    glVertex3f(5.0f,0.0f,0.0f); 
+    glVertex3f(0.0f,8.0f,0.0f); 
+    glVertex3f(6.5f,9.0f,0.0f); 
+    glVertex3f(9.0f,8.0f,0.0f); 
+    glVertex3f(9.0f,0.0f,0.0f); 
   glEnd(); 
   
 //  Parede lateral sem janela
   glBegin( GL_QUADS ); //ok
     glColor3f(0.0f,0.0f,1.0f); 
     glVertex3f(0.0f,0.0f,0.0f); 
-    glVertex3f(0.0f,0.0f,4.0f); 
-    glVertex3f(0.0f,4.0f,4.0f); 
-    glVertex3f(0.0f,4.0f,0.0f); 
+    glVertex3f(0.0f,0.0f,8.0f); 
+    glVertex3f(0.0f,8.0f,8.0f); 
+    glVertex3f(0.0f,8.0f,0.0f); 
   glEnd(); 
   
 //  Telhado
   glBegin( GL_QUAD_STRIP ); //ok
     glColor3f(0.0f,1.0f,0.0f); 
-    glVertex3f(0.0f,4.0f,0.0f); 
-    glVertex3f(0.0f,4.0f,4.0f); 
-    glVertex3f(2.5f,5.0f,0.0f); 
-    glVertex3f(2.5f,5.0f,4.0f); 
-    glVertex3f(5.0f,4.0f,0.0f); 
-    glVertex3f(5.0f,4.0f,4.0f); 
+    glVertex3f(0.0f,8.0f,0.0f); 
+    glVertex3f(0.0f,8.0f,8.0f); 
+    glVertex3f(6.5f,9.0f,0.0f); 
+    glVertex3f(6.5f,9.0f,8.0f); 
+    glVertex3f(9.0f,8.0f,0.0f); 
+    glVertex3f(9.0f,8.0f,8.0f); 
   glEnd();  
   
 //  parede da frente
@@ -67,23 +67,50 @@ void drawHouse(void){
 //  Parede lateral
   glBegin( GL_QUADS ); //ok
     glColor3f(0.0f,0.0f,1.0f); 
-    glVertex3f(5.0f,0.0f,0.0f); 
-    glVertex3f(5.0f,0.0f,4.0f); 
-    glVertex3f(5.0f,4.0f,4.0f); 
-    glVertex3f(5.0f,4.0f,0.0f); 
+    glVertex3f(9.0f,0.0f,0.0f); 
+    glVertex3f(9.0f,0.0f,8.0f); 
+    glVertex3f(9.0f,8.0f,8.0f); 
+    glVertex3f(9.0f,8.0f,0.0f); 
   glEnd();
   
 //  Chão
   glBegin( GL_QUADS ); 	
     glColor3f(1.0f,0.0f,1.0f); 
     glVertex3f(0.0f,0.0f,0.0f); 
-    glVertex3f(0.0f,0.0f,4.0f);
-    glVertex3f(5.0f,0.0f,4.0f);
-    glVertex3f(5.0f,0.0f,0.0f);   
+    glVertex3f(0.0f,0.0f,8.0f);
+    glVertex3f(9.0f,0.0f,8.0f);
+    glVertex3f(9.0f,0.0f,0.0f);   
   glEnd();
 
 
 
+  glFlush();
+}
+
+void drawBed(void){
+	glBegin( GL_QUADS );
+	    glColor3f(0.0f,0.0f,0.0f); 
+	    glVertex3f(2.0f,0.0f,0.0f); 
+	    glVertex3f(2.0f,0.0f,2.5f); 
+	    glVertex3f(2.0f,1.0f,2.5f); 
+	    glVertex3f(2.0f,1.0f,0.0f); 
+  	glEnd(); 
+
+	glBegin( GL_QUADS ); 
+	    glColor3f(0.0f,0.0f,0.0f); 
+	    glVertex3f(2.0f,0.0f,2.5f); 
+	    glVertex3f(2.0f,1.0f,2.5f); 
+	    glVertex3f(0.0f,1.0f,2.5f); 
+	    glVertex3f(0.0f,0.0f,2.5f); 
+  	glEnd(); 
+
+	glBegin( GL_QUADS ); 
+	    glColor3f(1.0f,1.0f,1.0f); 
+	    glVertex3f(0.0f,1.0f,0.0f); 
+	    glVertex3f(2.0f,1.0f,0.0f); 
+	    glVertex3f(2.0f,1.0f,2.5f); 
+	    glVertex3f(0.0f,1.0f,2.5f); 
+  	glEnd();	    
   glFlush();
 }
 
@@ -104,6 +131,7 @@ void RenderScene(void) {
 //  Linhas para demonstrar os eixos
   
   drawHouse();
+  drawBed();
   
   
    
@@ -114,7 +142,7 @@ void ChangeSize(GLsizei width,GLsizei height) {
   glViewport(0,0,width,height); 
   glMatrixMode( GL_PROJECTION ); 
   glLoadIdentity(); 
-  gluPerspective(100.0,width/height,0.1,10.0); 
+  gluPerspective(100,width/height,0.01,50.0); 
 } 
   
 void MoveLeft(void) { 
@@ -192,7 +220,7 @@ void MouseOptions(int button, int state, int x, int y)
 int main(int argc, char* argv[]) {
   glutInit(&argc, argv);    
   glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGBA ); 
-  glutInitWindowSize (500, 500); 
+  glutInitWindowSize (600, 600); 
   glutInitWindowPosition (100, 100); 
   glutCreateWindow("OpenGL - Mouse"); 
   glutReshapeFunc(ChangeSize); 
