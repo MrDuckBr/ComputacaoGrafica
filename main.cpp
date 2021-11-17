@@ -10,38 +10,9 @@ float lx=0.0f,lz=-1.0f,ly=0.0f;
 // XZ position of the camera
 float x=0.0f,z=3.0f,y=1.0f;
 
-void RenderScene(void) { 
-  glMatrixMode( GL_MODELVIEW ); 
-  glLoadIdentity(); 
-//  glTranslatef(0.0f,0.0f,distance); 
-//  glRotatef(vertangle,1.0f,0.0f,0.0f); 
-//  glRotatef(horzangle,0.0f,1.0f,0.0f); 
-  glEnable( GL_DEPTH_TEST ); 
-  glClearColor(0.0f,0.0f,0.0f,0.0f); 
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); 
-  
-  gluLookAt(	x, y, z,
-			x+lx, y+ly,  z+lz,
-			0.0f, 2.0f,  0.0f);
-  
-//  Linhas para demonstrar os eixos
-  glBegin( GL_LINES );  
-//  linha X
-    glColor3f(0.0f,1.0f,1.0f); 
-    glVertex3f(0.0f,0.0f,0.0f); 
-    glVertex3f(0.7f,0.0f,0.0f);
-//	 Linha Y
-    glColor3f(1.0f,0.0f,0.0f); 
-    glVertex3f(0.0f,0.0f,0.0f); 
-    glVertex3f(0.0f,0.5f,0.0f); 
-    
-//    Linha Z
-    glColor3f(0.0f,1.0f,0.0f); 
-    glVertex3f(0.0f,0.0f,0.0f); 
-    glVertex3f(0.0f,0.0f,0.7f); 
-  glEnd(); 
-  
-//  Parede atras
+
+void drawHouse(void){
+	//  Parede atras
   glBegin( GL_POLYGON ); 
     glColor3f(1.0f,0.0f,0.0f); 
     glVertex3f(0.0f,0.0f,0.0f); 
@@ -129,7 +100,29 @@ void RenderScene(void) {
 
 
 
-  glFlush(); 
+  glFlush();
+}
+
+void RenderScene(void) { 
+  glMatrixMode( GL_MODELVIEW ); 
+  glLoadIdentity(); 
+//  glTranslatef(0.0f,0.0f,distance); 
+//  glRotatef(vertangle,1.0f,0.0f,0.0f); 
+//  glRotatef(horzangle,0.0f,1.0f,0.0f); 
+  glEnable( GL_DEPTH_TEST ); 
+  glClearColor(0.0f,0.0f,0.0f,0.0f); 
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); 
+  
+  gluLookAt(	x, y, z,
+			x+lx, y+ly,  z+lz,
+			0.0f, 2.0f,  0.0f);
+  
+//  Linhas para demonstrar os eixos
+  
+  drawHouse();
+  
+  
+   
   glutSwapBuffers(); 
 } 
   
@@ -174,11 +167,7 @@ void MoveBackward(void) {
 void KeyboardOptions(int key, int x, int y)
 {
 	float fraction = 0.1f;
-	if (key == GLUT_KEY_UP) {
-		MoveUp();
-	} else if(key == GLUT_KEY_DOWN) {
-        MoveDown();
-	} else if (key == GLUT_KEY_LEFT) {
+	 if (key == GLUT_KEY_LEFT) {
 		angle -= 0.01f;
 			lx = sin(angle);
 			lz = -cos(angle);
@@ -186,13 +175,15 @@ void KeyboardOptions(int key, int x, int y)
         angle += 0.01f;
 			lx = sin(angle);
 			lz = -cos(angle);
-	} else if (key == GLUT_KEY_PAGE_UP) {
+	} else if (key == GLUT_KEY_UP) {
         x += lx * fraction;
 			z += lz * fraction;
-	} else if (key == GLUT_KEY_PAGE_DOWN) {
+	} else if (key == GLUT_KEY_DOWN) {
 			x -= lx * fraction;
 			z -= lz * fraction;
 	}
+	
+	else if(key == 27 ) exit(0);
     glutPostRedisplay();
 }
 
@@ -226,4 +217,4 @@ int main(int argc, char* argv[]) {
   glutDisplayFunc(RenderScene);
   glutMainLoop(); 
   return 0;
-} 
+} 	
