@@ -12,7 +12,10 @@ float x=2.0f,z=3.0f,y=1.0f;
 
 
 void drawHouse(void){
+	
+	
 	//  Parede atras
+	static float lystre[] = {0.86,0.62,0.12};
   glBegin( GL_POLYGON ); 
     glColor3f(1.0f,0.0f,0.0f); 
     glVertex3f(0.0f,0.0f,0.0f); 
@@ -87,6 +90,54 @@ void drawHouse(void){
   glFlush();
 }
 
+void drawArmario(void){
+	
+	
+	glBegin( GL_POLYGON );//Tras do armario
+	 glColor3f(1.0f,0.0f,0.0f);
+	 glVertex3f(4.9f,0.0f,1.0f); 
+	 glVertex3f(4.9f,0.0f,3.0f); 
+	 glVertex3f(4.9f,3.0f,3.0f); 
+	 glVertex3f(4.9f,3.0f,1.0f); 
+	glEnd();
+	
+	glBegin( GL_POLYGON );//frente do armario
+	 glColor3f(1.0f,0.0f,0.0f);
+	 glVertex3f(4.5f,0.0f,1.0f); 
+	 glVertex3f(4.5f,0.0f,3.0f); 
+	 glVertex3f(4.5f,3.0f,3.0f); 
+	 glVertex3f(4.5f,3.0f,1.0f); 
+	glEnd();
+	
+	glBegin( GL_POLYGON );//esquerda Armario
+	 glColor3f(1.0f,0.0f,0.0f);
+	 glVertex3f(4.5f,0.0f,1.0f); 
+	 glVertex3f(4.9f,0.0f,1.0f); 
+	 glVertex3f(4.9f,3.0f,1.0f); 
+	 glVertex3f(4.5f,3.0f,1.0f); 
+	glEnd();
+	
+	
+	glBegin( GL_POLYGON );//direita Armario
+	 glColor3f(1.0f,0.0f,1.0f);
+	 glVertex3f(4.5f,0.0f,3.0f); 
+	 glVertex3f(4.9f,0.0f,3.0f); 
+	 glVertex3f(4.9f,3.0f,3.0f); 
+	 glVertex3f(4.5f,3.0f,3.0f); 
+	glEnd();
+	
+	
+	glBegin( GL_POLYGON );//frente porta 
+		 glColor3f(1.0f,1.0f,0.0f);
+		 glVertex3f(4.4f,0.8f,2.0f); 
+		 glVertex3f(4.4f,0.8f,2.9f); 
+		 glVertex3f(4.4f,2.9f,2.9f); 
+		 glVertex3f(4.4f,2.9f,2.0f); 
+	glEnd();
+	
+	
+}
+
 void RenderScene(void) { 
   glMatrixMode( GL_MODELVIEW ); 
   glLoadIdentity(); 
@@ -104,6 +155,7 @@ void RenderScene(void) {
 //  Linhas para demonstrar os eixos
   
   drawHouse();
+  drawArmario();
   
   
    
