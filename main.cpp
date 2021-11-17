@@ -8,7 +8,7 @@ float angle=0.0;
 // actual vector representing the camera's direction
 float lx=0.0f,lz=-1.0f,ly=0.0f;
 // XZ position of the camera
-float x=0.0f,z=3.0f,y=1.0f;
+float x=2.0f,z=3.0f,y=1.0f;
 
 
 void drawHouse(void){
@@ -16,30 +16,30 @@ void drawHouse(void){
   glBegin( GL_POLYGON ); 
     glColor3f(1.0f,0.0f,0.0f); 
     glVertex3f(0.0f,0.0f,0.0f); 
-    glVertex3f(0.0f,0.5f,0.0f); 
-    glVertex3f(0.5f,0.7f,0.0f); 
-    glVertex3f(0.7f,0.5f,0.0f); 
-    glVertex3f(0.7f,0.0f,0.0f); 
+    glVertex3f(0.0f,4.0f,0.0f); 
+    glVertex3f(2.5f,5.0f,0.0f); 
+    glVertex3f(5.0f,4.0f,0.0f); 
+    glVertex3f(5.0f,0.0f,0.0f); 
   glEnd(); 
   
 //  Parede lateral sem janela
-  glBegin( GL_QUADS ); 
+  glBegin( GL_QUADS ); //ok
     glColor3f(0.0f,0.0f,1.0f); 
     glVertex3f(0.0f,0.0f,0.0f); 
-    glVertex3f(0.0f,0.0f,0.4f); 
-    glVertex3f(0.0f,0.2f,0.4f); 
-    glVertex3f(0.0f,0.2f,0.0f); 
+    glVertex3f(0.0f,0.0f,4.0f); 
+    glVertex3f(0.0f,4.0f,4.0f); 
+    glVertex3f(0.0f,4.0f,0.0f); 
   glEnd(); 
   
 //  Telhado
-  glBegin( GL_QUAD_STRIP ); 
+  glBegin( GL_QUAD_STRIP ); //ok
     glColor3f(0.0f,1.0f,0.0f); 
-    glVertex3f(0.0f,0.2f,0.0f); 
-    glVertex3f(0.0f,0.2f,0.4f); 
-    glVertex3f(0.2f,0.3f,0.0f); 
-    glVertex3f(0.2f,0.3f,0.4f); 
-    glVertex3f(0.4f,0.2f,0.0f); 
-    glVertex3f(0.4f,0.2f,0.4f); 
+    glVertex3f(0.0f,4.0f,0.0f); 
+    glVertex3f(0.0f,4.0f,4.0f); 
+    glVertex3f(2.5f,5.0f,0.0f); 
+    glVertex3f(2.5f,5.0f,4.0f); 
+    glVertex3f(5.0f,4.0f,0.0f); 
+    glVertex3f(5.0f,4.0f,4.0f); 
   glEnd();  
   
 //  parede da frente
@@ -65,37 +65,21 @@ void drawHouse(void){
   
   
 //  Parede lateral
-  glBegin( GL_QUADS ); 
-    glColor3f(0.0f,1.0f,1.0f); 
-    glVertex3f(0.4f,0.0f,0.0f); 
-    glVertex3f(0.4f,0.0f,0.15f); 
-    glVertex3f(0.4f,0.2f,0.15f); 
-    glVertex3f(0.4f,0.2f,0.0f); 
-    
-    glVertex3f(0.4f,0.0f,0.4f); 
-    glVertex3f(0.4f,0.0f,0.25f); 
-    glVertex3f(0.4f,0.2f,0.25f); 
-    glVertex3f(0.4f,0.2f,0.4f);
-    
-    glVertex3f(0.4f,0.2f,0.25f); 
-    glVertex3f(0.4f,0.2f,0.15f); 
-    glVertex3f(0.4f,0.15f,0.15f); 
-    glVertex3f(0.4f,0.15f,0.25f);
-    
-    glVertex3f(0.4f,0.0f,0.25f); 
-    glVertex3f(0.4f,0.0f,0.15f); 
-    glVertex3f(0.4f,0.05f,0.15f); 
-    glVertex3f(0.4f,0.05f,0.25f);
+  glBegin( GL_QUADS ); //ok
+    glColor3f(0.0f,0.0f,1.0f); 
+    glVertex3f(5.0f,0.0f,0.0f); 
+    glVertex3f(5.0f,0.0f,4.0f); 
+    glVertex3f(5.0f,4.0f,4.0f); 
+    glVertex3f(5.0f,4.0f,0.0f); 
   glEnd();
-  
   
 //  Chão
   glBegin( GL_QUADS ); 	
     glColor3f(1.0f,0.0f,1.0f); 
     glVertex3f(0.0f,0.0f,0.0f); 
-    glVertex3f(0.0f,0.0f,0.4f);
-    glVertex3f(0.4f,0.0f,0.4f);
-    glVertex3f(0.4f,0.0f,0.0f);   
+    glVertex3f(0.0f,0.0f,4.0f);
+    glVertex3f(5.0f,0.0f,4.0f);
+    glVertex3f(5.0f,0.0f,0.0f);   
   glEnd();
 
 
@@ -130,7 +114,7 @@ void ChangeSize(GLsizei width,GLsizei height) {
   glViewport(0,0,width,height); 
   glMatrixMode( GL_PROJECTION ); 
   glLoadIdentity(); 
-  gluPerspective(30.0,width/height,0.1,10.0); 
+  gluPerspective(100.0,width/height,0.1,10.0); 
 } 
   
 void MoveLeft(void) { 
@@ -168,11 +152,11 @@ void KeyboardOptions(int key, int x, int y)
 {
 	float fraction = 0.1f;
 	 if (key == GLUT_KEY_LEFT) {
-		angle -= 0.01f;
+		angle -= 0.05f;
 			lx = sin(angle);
 			lz = -cos(angle);
 	} else if (key == GLUT_KEY_RIGHT) {
-        angle += 0.01f;
+        angle += 0.05f;
 			lx = sin(angle);
 			lz = -cos(angle);
 	} else if (key == GLUT_KEY_UP) {
