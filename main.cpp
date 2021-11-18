@@ -6,6 +6,7 @@
 #define    checkImageHeight 64
 static GLubyte checkImage[checkImageHeight][checkImageWidth][4];
 
+
 #ifdef GL_VERSION_1_1
 static GLuint texName;
 #endif
