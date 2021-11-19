@@ -26,22 +26,23 @@ float angle = 0.0;
 // actual vector representing the camera's direction
 float lx = 0.0f, lz = -1.0f, ly = 0.0f;
 // XZ position of the camera
-float x = 4.0f, z = 3.0f, y = 2.0f;
+float x = 4.0f, z = 4.5f, y = 2.0f;
 
 void drawRobot(void)
 {
 
-	glTranslatef(4.0, 2.0, 2.0);
-	glScalef(1,1,1);
+	glColor3f(0.5f, 0.5f, 0.5f);
+	glTranslatef(5.0, 3.0, 1.0);
+	glScalef(0.5,0.5,0.5);
 	glPushMatrix(); //corpo
 	glScalef(2.0, 3.0, 1.0);
-	glutWireCube(1.0);
+	glutSolidCube(1.0);
 	glPopMatrix();
 
 	glPushMatrix(); //cabe�a
 	glTranslatef(0, 2.5, 0);
 	glScalef(1.0, 1.0, 1.0);
-	glutWireSphere(1.0, 20, 16);
+	glutSolidSphere(1.0, 20, 16);
 	glPopMatrix();
 
 	glPushMatrix();
@@ -50,7 +51,7 @@ void drawRobot(void)
 	glTranslatef(1.0, 0.0, 0.0);
 	glPushMatrix();
 	glScalef(2.0, 0.4, 0.5);
-	glutWireCube(1.0);
+	glutSolidCube(1.0);
 	glPopMatrix();
 
 	glTranslatef(1.0, 0.0, 0.0); // antebraco
@@ -58,7 +59,7 @@ void drawRobot(void)
 	glTranslatef(1.0, 0.0, 0.0);
 	glPushMatrix();
 	glScalef(2.0, 0.4, 0.5);
-	glutWireCube(1.0);
+	glutSolidCube(1.0);
 	glPopMatrix();
 
 	glTranslatef(1.5, 0.0, 0.0); // Pulso
@@ -66,7 +67,7 @@ void drawRobot(void)
 	glTranslatef(0.0, 0.0, 0.0);
 	glPushMatrix();
 	glScalef(0.8, 0.4, 0.1);
-	glutWireCube(1.0);
+	glutSolidCube(1.0);
 	glPopMatrix();
 
 	glPushMatrix(); // DEDO 1
@@ -76,7 +77,7 @@ void drawRobot(void)
 	glTranslatef(0.2, 0.0, 0.4);
 	glPushMatrix();
 	glScalef(0.5, 0.1, 0.1);
-	glutWireCube(1.0);
+	glutSolidCube(1.0);
 	glPopMatrix();
 
 	glTranslatef(0.2, 0.0, 0.0);
@@ -84,7 +85,7 @@ void drawRobot(void)
 	glTranslatef(0.2, 0.0, 0.0);
 	glPushMatrix();
 	glScalef(0.3, 0.1, 0.1);
-	glutWireCube(1.0);
+	glutSolidCube(1.0);
 	glPopMatrix();
 	glPopMatrix();
 
@@ -94,7 +95,7 @@ void drawRobot(void)
 	glTranslatef(0.2, 0.0, 0.6);
 	glPushMatrix();
 	glScalef(0.5, 0.1, 0.1);
-	glutWireCube(1.0);
+	glutSolidCube(1.0);
 	glPopMatrix();
 
 	glTranslatef(0.2, 0.0, 0.0);
@@ -102,11 +103,100 @@ void drawRobot(void)
 	glTranslatef(0.2, 0.0, 0.0);
 	glPushMatrix();
 	glScalef(0.3, 0.1, 0.1);
-	glutWireCube(1.0);
+	glutSolidCube(1.0);
 	glPopMatrix();
 	glPopMatrix();
 
 	glPopMatrix();
+	
+	//Outro braco
+	
+	glPushMatrix();
+	glTranslatef(-1.0, 1.3, 0.0);
+	glRotatef(180,0,1,0);
+	glRotatef((GLfloat)shoulder, 0.0, 0.0, 1.0);
+	glTranslatef(1.0, 0.0, 0.0);
+	glPushMatrix();
+	glScalef(2.0, 0.4, 0.5);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	glTranslatef(1.0, 0.0, 0.0); // antebraco
+	glRotatef((GLfloat)elbow, 0.0, 0.0, 1.0);
+	glTranslatef(1.0, 0.0, 0.0);
+	glPushMatrix();
+	glScalef(2.0, 0.4, 0.5);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	glTranslatef(1.5, 0.0, 0.0); // Pulso
+	glRotatef((GLfloat)fist, 0.0, 0.0, 1.0);
+	glTranslatef(0.0, 0.0, 0.0);
+	glPushMatrix();
+	glScalef(0.8, 0.4, 0.1);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	glPushMatrix(); // DEDO 1
+	glTranslatef(0.4, 0.0, -0.5);
+	glRotatef((GLfloat)finger, 0.0, 0.0, 1.0);
+
+	glTranslatef(0.2, 0.0, 0.4);
+	glPushMatrix();
+	glScalef(0.5, 0.1, 0.1);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	glTranslatef(0.2, 0.0, 0.0);
+	glRotatef((GLfloat)finger, 0.0, 0.0, 1.0);
+	glTranslatef(0.2, 0.0, 0.0);
+	glPushMatrix();
+	glScalef(0.3, 0.1, 0.1);
+	glutSolidCube(1.0);
+	glPopMatrix();
+	glPopMatrix();
+
+	glPushMatrix(); // DEDO 2
+	glTranslatef(0.4, 0.0, -0.5);
+	glRotatef((GLfloat)finger2, 0.0, 0.0, 1.0);
+	glTranslatef(0.2, 0.0, 0.6);
+	glPushMatrix();
+	glScalef(0.5, 0.1, 0.1);
+	glutSolidCube(1.0);
+	glPopMatrix();
+
+	glTranslatef(0.2, 0.0, 0.0);
+	glRotatef((GLfloat)finger2, 0.0, 0.0, 1.0);
+	glTranslatef(0.2, 0.0, 0.0);
+	glPushMatrix();
+	glScalef(0.3, 0.1, 0.1);
+	glutSolidCube(1.0);
+	glPopMatrix();
+	glPopMatrix();
+
+	glPopMatrix();
+	
+	//Pernas
+	
+	glColor3f(0.5f, 0.5f, 1.0f);
+	glTranslatef(0,-2,0);
+    glPushMatrix();
+    glScalef(2.0, 1.0, 1.0);
+    glutSolidCube(1.0);
+    glPopMatrix();
+
+	glColor3f(0.5f, 0.5f, 0.5f);
+    glTranslatef(-0.5,-2.1,0.0);
+    glPushMatrix();
+    glScalef(0.8, 4.0, 0.5);
+    glutSolidCube(1.0);
+    glPopMatrix();
+
+    glTranslatef(1,0.0,0.0);
+    glPushMatrix();
+    glScalef(0.8, 4.0, 0.5);
+    glutSolidCube(1.0);
+    glPopMatrix();
 }
 
 void drawHouse(void)
@@ -262,17 +352,17 @@ void drawBed(void)
 	glBegin(GL_QUADS);
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(2.0f, 0.0f, 0.0f);
-	glVertex3f(2.0f, 0.0f, 2.5f);
-	glVertex3f(2.0f, 1.0f, 2.5f);
+	glVertex3f(2.0f, 0.0f, 4.5f);
+	glVertex3f(2.0f, 1.0f, 4.5f);
 	glVertex3f(2.0f, 1.0f, 0.0f);
 	glEnd();
 
 	glBegin(GL_QUADS);
 	glColor3f(0.0f, 0.0f, 0.0f);
-	glVertex3f(2.0f, 0.0f, 2.5f);
-	glVertex3f(2.0f, 1.0f, 2.5f);
-	glVertex3f(0.0f, 1.0f, 2.5f);
-	glVertex3f(0.0f, 0.0f, 2.5f);
+	glVertex3f(2.0f, 0.0f, 4.5f);
+	glVertex3f(2.0f, 1.0f, 4.5f);
+	glVertex3f(0.0f, 1.0f, 4.5f);
+	glVertex3f(0.0f, 0.0f, 4.5f);
 	glEnd();
 
 	glEnable(GL_TEXTURE_2D);
@@ -288,9 +378,9 @@ void drawBed(void)
 	glTexCoord2f(0.0, 3.0);
 	glVertex3f(2.0f, 1.0f, 0.0f);
 	glTexCoord2f(3.0, 3.0);
-	glVertex3f(2.0f, 1.0f, 2.5f);
+	glVertex3f(2.0f, 1.0f, 4.5f);
 	glTexCoord2f(3.0, 0.0);
-	glVertex3f(0.0f, 1.0f, 2.5f);
+	glVertex3f(0.0f, 1.0f, 4.5f);
 	glEnd();
 	glFlush();
 	glDisable(GL_TEXTURE_2D);
