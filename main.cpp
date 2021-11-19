@@ -2,10 +2,8 @@
 #include <math.h>
 
 
-#define    checkImageWidth 64
-#define    checkImageHeight 64
-static GLubyte checkImage[checkImageHeight][checkImageWidth][4];
-
+#define	stripeImageWidth 32
+GLubyte stripeImage[4*stripeImageWidth];
 
 #ifdef GL_VERSION_1_1
 static GLuint texName;
@@ -28,18 +26,41 @@ float lx = 0.0f, lz = -1.0f, ly = 0.0f;
 // XZ position of the camera
 float x = 4.0f, z = 4.5f, y = 2.0f;
 
+void makeStripeImage(void)
+{
+   int j;
+    
+   for (j = 0; j < stripeImageWidth; j++) {
+      stripeImage[4*j] = (GLubyte) ((j>1) ? 191 : 0);
+      stripeImage[4*j+1] = (GLubyte) ((j>1) ? 191 : 0);
+      stripeImage[4*j+2] = (GLubyte) ((j>1) ? 191 : 0);
+      stripeImage[4*j+3] = (GLubyte) 255;
+   }
+}
+
+/*  planes for texture coordinate generation  */
+static GLfloat xequalzero[] = {1.0, 0.0, 0.0, 0.0};
+static GLfloat slanted[] = {1.0, 1.0, 1.0, 0.0};
+static GLfloat *currentCoeff;
+static GLenum currentPlane;
+static GLint currentGenMode;
+
 void drawRobot(void)
 {
+	
+	glEnable(GL_TEXTURE_1D);
+   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glBindTexture(GL_TEXTURE_1D, texName);
 
 	glColor3f(0.5f, 0.5f, 0.5f);
-	glTranslatef(5.0, 3.0, 1.0);
-	glScalef(0.5,0.5,0.5);
+	glTranslatef(5.0, 2.5, 1.0);
+	glScalef(0.4,0.4,0.4);
 	glPushMatrix(); //corpo
 	glScalef(2.0, 3.0, 1.0);
 	glutSolidCube(1.0);
 	glPopMatrix();
 
-	glPushMatrix(); //cabeï¿½a
+	glPushMatrix(); //cabe?a
 	glTranslatef(0, 2.5, 0);
 	glScalef(1.0, 1.0, 1.0);
 	glutSolidSphere(1.0, 20, 16);
@@ -178,6 +199,8 @@ void drawRobot(void)
 	
 	//Pernas
 	
+	
+	
 	glColor3f(0.5f, 0.5f, 1.0f);
 	glTranslatef(0,-2,0);
     glPushMatrix();
@@ -197,6 +220,8 @@ void drawRobot(void)
     glScalef(0.8, 4.0, 0.5);
     glutSolidCube(1.0);
     glPopMatrix();
+    
+    glDisable(GL_TEXTURE_1D);
 }
 
 void drawHouse(void)
@@ -205,7 +230,7 @@ void drawHouse(void)
 	//  Parede atras
 
 	glBegin(GL_POLYGON);
-	glColor3f(1.0f, 0.0f, 0.0f);
+	glColor3f(1.0f, 0.1f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 8.0f, 0.0f);
 	glVertex3f(4.5f, 9.0f, 0.0f);
@@ -217,7 +242,7 @@ void drawHouse(void)
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, rod);
 	//glMaterialfv(GL_FRONT,GL_AMBIENT,rod);
 	glBegin(GL_QUADS); //ok
-	//glColor3f(0.0f,0.0f,1.0f);
+	glColor3f(0.5f,1.0f,1.5f);
 	// glNormal3f(-1,0,0); //innvendig
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 8.0f);
@@ -237,24 +262,14 @@ void drawHouse(void)
 	glEnd();
 
 	//  parede da frente
-	glBegin(GL_QUADS);
+	glBegin(GL_POLYGON);
 	glColor3f(1.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.4f);
-	glVertex3f(0.0f, 0.2f, 0.4f);
-	glVertex3f(0.15f, 0.2f, 0.4f);
-	glVertex3f(0.15f, 0.0f, 0.4f);
-
-	glVertex3f(0.25f, 0.0f, 0.4f);
-	glVertex3f(0.25f, 0.2f, 0.4f);
-	glVertex3f(0.4f, 0.2f, 0.4f);
-	glVertex3f(0.4f, 0.0f, 0.4f);
-	glEnd();
-	glBegin(GL_TRIANGLES);
-	glColor3f(1.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, 0.2f, 0.4f);
-	glVertex3f(0.2f, 0.3f, 0.4f);
-	glVertex3f(0.4f, 0.2f, 0.4f);
-	glEnd();
+	glVertex3f(0.0f, 0.0f, 8.0f);
+	glVertex3f(0.0f, 8.0f, 8.0f);
+	glVertex3f(4.5f, 9.0f, 8.0f);
+	glVertex3f(9.0f, 8.0f, 8.0f);
+	glVertex3f(9.0f, 0.0f, 8.0f);
+	glEnd();	
 
 	//  Parede lateral
 	glBegin(GL_QUADS); //ok
@@ -265,7 +280,7 @@ void drawHouse(void)
 	glVertex3f(9.0f, 8.0f, 0.0f);
 	glEnd();
 
-	//  Chï¿½o
+	//  Ch?o
 	glBegin(GL_QUADS);
 	glColor3f(1.0f, 0.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
@@ -283,53 +298,49 @@ void drawArmario(void)
 	glBegin(GL_POLYGON); //Tras do armario
 	glVertex3f(8.9f, 0.0f, 1.0f);
 	glVertex3f(8.9f, 0.0f, 3.0f);
-	glVertex3f(8.9f, 3.0f, 3.0f);
-	glVertex3f(8.9f, 3.0f, 1.0f);
+	glVertex3f(8.9f, 5.0f, 3.0f);
+	glVertex3f(8.9f, 5.0f, 1.0f);
 	glEnd();
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, madeira);
-
+	
 	glBegin(GL_POLYGON); //frente do armario
-						 //	 glColor3f(1.0f,0.0f,0.0f);
+	glColor3f(0.545f,0.27f,0.074f);
 	glVertex3f(8.5f, 0.0f, 1.0f);
 	glVertex3f(8.5f, 0.0f, 3.0f);
-	glVertex3f(8.5f, 3.0f, 3.0f);
-	glVertex3f(8.5f, 3.0f, 1.0f);
+	glVertex3f(8.5f, 5.0f, 3.0f);
+	glVertex3f(8.5f, 5.0f, 1.0f);
 	glEnd();
 
 	glBegin(GL_POLYGON); //esquerda Armario
-	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(8.5f, 0.0f, 1.0f);
 	glVertex3f(8.9f, 0.0f, 1.0f);
-	glVertex3f(8.9f, 3.0f, 1.0f);
-	glVertex3f(8.5f, 3.0f, 1.0f);
+	glVertex3f(8.9f, 5.0f, 1.0f);
+	glVertex3f(8.5f, 5.0f, 1.0f);
 	glEnd();
 
 	glBegin(GL_POLYGON); //direita Armario
-	glColor3f(1.0f, 0.0f, 1.0f);
 	glVertex3f(8.5f, 0.0f, 3.0f);
 	glVertex3f(8.9f, 0.0f, 3.0f);
-	glVertex3f(8.9f, 3.0f, 3.0f);
-	glVertex3f(8.5f, 3.0f, 3.0f);
+	glVertex3f(8.9f, 5.0f, 3.0f);
+	glVertex3f(8.5f, 5.0f, 3.0f);
 	glEnd();
 
 	glBegin(GL_POLYGON); //frente porta direita
-	glColor3f(1.0f, 1.0f, 0.0f);
+	glColor3f(0.82f, 0.4117f, 0.1176f);
 	glVertex3f(8.4f, 0.8f, 2.05f);
 	glVertex3f(8.4f, 0.8f, 2.9f);
-	glVertex3f(8.4f, 2.9f, 2.9f);
-	glVertex3f(8.4f, 2.9f, 2.05f);
+	glVertex3f(8.4f, 4.7f, 2.9f);
+	glVertex3f(8.4f, 4.7f, 2.05f);
 	glEnd();
 
 	glBegin(GL_POLYGON); //frente porta esquerda
-	glColor3f(1.0f, 1.0f, 0.0f);
 	glVertex3f(8.4f, 0.8f, 1.1f);
 	glVertex3f(8.4f, 0.8f, 1.95f);
-	glVertex3f(8.4f, 2.9f, 1.95f);
-	glVertex3f(8.4f, 2.9f, 1.10f);
+	glVertex3f(8.4f, 4.7f, 1.95f);
+	glVertex3f(8.4f, 4.7f, 1.10f);
 	glEnd();
 
 	glBegin(GL_POLYGON); //gaveta
-	glColor3f(1.0f, 1.0f, 0.0f);
 	glVertex3f(8.4f, 0.3f, 1.1f);
 	glVertex3f(8.4f, 0.3f, 1.95f);
 	glVertex3f(8.4f, 0.7f, 1.95f);
@@ -337,7 +348,6 @@ void drawArmario(void)
 	glEnd();
 
 	glBegin(GL_POLYGON); //gaveta direita
-	glColor3f(1.0f, 1.0f, 0.0f);
 	glVertex3f(8.4f, 0.3f, 2.05f);
 	glVertex3f(8.4f, 0.3f, 2.9f);
 	glVertex3f(8.4f, 0.7f, 2.9f);
@@ -347,8 +357,6 @@ void drawArmario(void)
 
 void drawBed(void)
 {
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, veggfarge);
-	glMaterialfv(GL_FRONT, GL_AMBIENT, veggfarge);
 	glBegin(GL_QUADS);
 	glColor3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(2.0f, 0.0f, 0.0f);
@@ -365,14 +373,14 @@ void drawBed(void)
 	glVertex3f(0.0f, 0.0f, 4.5f);
 	glEnd();
 
-	glEnable(GL_TEXTURE_2D);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-#ifdef GL_VERSION_1_1
-	glBindTexture(GL_TEXTURE_2D, texName);
-#endif
+//	glEnable(GL_TEXTURE_2D);
+//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+//#ifdef GL_VERSION_1_1
+//	glBindTexture(GL_TEXTURE_2D, texName);
+//#endif
 
 	glBegin(GL_QUADS);
-	glColor3f(1.0f, 1.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
 	glTexCoord2f(0.0, 0.0);
 	glVertex3f(0.0f, 1.0f, 0.0f);
 	glTexCoord2f(0.0, 3.0);
@@ -383,7 +391,7 @@ void drawBed(void)
 	glVertex3f(0.0f, 1.0f, 4.5f);
 	glEnd();
 	glFlush();
-	glDisable(GL_TEXTURE_2D);
+//	glDisable(GL_TEXTURE_2D);
 }
 
 void ligth(void)
@@ -391,7 +399,7 @@ void ligth(void)
 
 	
 
-	GLfloat lightDiffuse[] = {1.0f, 1.0f, 0.0f, 1.0f}; // amarelo difuso: cor onde a luz atinge diretamente a superfÃ­cie do objeto
+	GLfloat lightDiffuse[] = {1.0f, 1.0f, 0.0f, 1.0f}; // amarelo difuso: cor onde a luz atinge diretamente a superfície do objeto
 	GLfloat lightAmbient[] = {0.0f, 0.0f, 0.0f, 0.1f}; // ambiente vermelho: cor aplicada em todos os lugares
 	GLfloat lightPosition[] = {4.5f, 10.0f, 4.5f, 0.0f};
 	GLfloat direction[] = {5.0, 1.0, 5.0};
@@ -399,7 +407,7 @@ void ligth(void)
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
 	// Componente de luz difusa
 	//glLightfv (GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
-	// PosiÃ§Ã£o da luz
+	// Posição da luz
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 	
 
@@ -432,6 +440,8 @@ void RenderScene(void)
 	drawHouse();
 	drawArmario();
 	drawBed();
+	
+   
 	 drawRobot();
 
 	glutSwapBuffers();
@@ -445,22 +455,6 @@ void ChangeSize(GLsizei width, GLsizei height)
 	gluPerspective(100, width / height, 0.01, 50.0);
 }
 
-void makeCheckImage(void)
-{
-	int i, j, c;
-
-	for (i = 0; i < checkImageHeight; i++)
-	{
-		for (j = 0; j < checkImageWidth; j++)
-		{
-			c = ((((i & 0x10) == 0) ^ ((j & 0x10)) == 0)) * 255;
-			checkImage[i][j][0] = (GLubyte)c;
-			checkImage[i][j][1] = (GLubyte)c;
-			checkImage[i][j][2] = (GLubyte)c;
-			checkImage[i][j][3] = (GLubyte)255;
-		}
-	}
-}
 
 void KeyboardOptions(int key, int x, int y)
 {
@@ -576,28 +570,35 @@ void MouseOptions(int button, int state, int x, int y)
 }
 
 void init()
-{
+{ glClearColor (0.0, 0.0, 0.0, 0.0);
+   glEnable(GL_DEPTH_TEST);
+   glShadeModel(GL_SMOOTH);
 
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glShadeModel(GL_FLAT);
-	glEnable(GL_DEPTH_TEST);
-
-	makeCheckImage();
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+   makeStripeImage();
+   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 #ifdef GL_VERSION_1_1
-	glGenTextures(1, &texName);
-	glBindTexture(GL_TEXTURE_2D, texName);
+   glGenTextures(1, &texName);
+   glBindTexture(GL_TEXTURE_1D, texName);
 #endif
+   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, stripeImageWidth, 0,
+                GL_RGBA, GL_UNSIGNED_BYTE, stripeImage);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, checkImageWidth, checkImageHeight,
-				 0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
+   currentCoeff = xequalzero;
+   currentGenMode = GL_OBJECT_LINEAR;
+   currentPlane = GL_OBJECT_PLANE;
+   glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, currentGenMode);
+   glTexGenfv(GL_S, currentPlane, currentCoeff);
 
+   glEnable(GL_TEXTURE_GEN_S);
+   glEnable(GL_AUTO_NORMAL);
+   glEnable(GL_NORMALIZE);
+   glFrontFace(GL_CW);
+   glMaterialf (GL_FRONT, GL_SHININESS, 64.0);
 }
 
 int main(int argc, char *argv[])
@@ -616,3 +617,4 @@ int main(int argc, char *argv[])
 	glutMainLoop();
 	return 0;
 }
+
