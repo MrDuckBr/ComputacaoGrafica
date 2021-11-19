@@ -4,6 +4,9 @@
 
 #define	stripeImageWidth 32
 GLubyte stripeImage[4*stripeImageWidth];
+#define checkImageWidth 64
+#define checkImageHeight 64
+static GLubyte checkImage[checkImageHeight][checkImageWidth][4];
 
 #ifdef GL_VERSION_1_1
 static GLuint texName;
@@ -13,7 +16,7 @@ GLfloat horzangle = -45.0, vertangle = 30.0, distance = -3.0;
 static int shoulder = -50, elbow = 310, fist = 0, finger2 = -46, finger = -46;
 GLuint texture;
 
-bool teste = false;
+bool luzes = false;
 
 static float veggfarge[] = {0.9, 0.9, 0.9, 1};
 static float rod[] = {0.5, 0, 0};
@@ -28,13 +31,23 @@ float x = 4.0f, z = 4.5f, y = 2.0f;
 
 void makeStripeImage(void)
 {
-   int j;
+   int i, j, c;
     
    for (j = 0; j < stripeImageWidth; j++) {
       stripeImage[4*j] = (GLubyte) ((j>1) ? 191 : 0);
       stripeImage[4*j+1] = (GLubyte) ((j>1) ? 191 : 0);
       stripeImage[4*j+2] = (GLubyte) ((j>1) ? 191 : 0);
       stripeImage[4*j+3] = (GLubyte) 255;
+   }
+   
+   for (i = 0; i < checkImageHeight; i++) {
+      for (j = 0; j < checkImageWidth; j++) {
+         c = ((((i & 0x10) == 0) ^ ((j & 0x10)) == 0)) * 255;
+			checkImage[i][j][0] = (GLubyte)c;
+			checkImage[i][j][1] = (GLubyte)c;
+			checkImage[i][j][2] = (GLubyte)c;
+			checkImage[i][j][3] = (GLubyte)255;
+      }
    }
 }
 
@@ -51,6 +64,7 @@ void drawRobot(void)
 	glEnable(GL_TEXTURE_1D);
    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBindTexture(GL_TEXTURE_1D, texName);
+	   glEnable(GL_TEXTURE_GEN_S);
 
 	glColor3f(0.5f, 0.5f, 0.5f);
 	glTranslatef(5.0, 2.5, 1.0);
@@ -222,6 +236,7 @@ void drawRobot(void)
     glPopMatrix();
     
     glDisable(GL_TEXTURE_1D);
+    glDisable(GL_TEXTURE_GEN_S);
 }
 
 void drawHouse(void)
@@ -373,11 +388,11 @@ void drawBed(void)
 	glVertex3f(0.0f, 0.0f, 4.5f);
 	glEnd();
 
-//	glEnable(GL_TEXTURE_2D);
-//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-//#ifdef GL_VERSION_1_1
-//	glBindTexture(GL_TEXTURE_2D, texName);
-//#endif
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+#ifdef GL_VERSION_1_1
+	glBindTexture(GL_TEXTURE_2D, texName);
+#endif
 
 	glBegin(GL_QUADS);
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -391,14 +406,11 @@ void drawBed(void)
 	glVertex3f(0.0f, 1.0f, 4.5f);
 	glEnd();
 	glFlush();
-//	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_2D);
 }
 
 void ligth(void)
 {
-
-	
-
 	GLfloat lightDiffuse[] = {1.0f, 1.0f, 0.0f, 1.0f}; // amarelo difuso: cor onde a luz atinge diretamente a superfície do objeto
 	GLfloat lightAmbient[] = {0.0f, 0.0f, 0.0f, 0.1f}; // ambiente vermelho: cor aplicada em todos os lugares
 	GLfloat lightPosition[] = {4.5f, 10.0f, 4.5f, 0.0f};
@@ -415,9 +427,16 @@ void ligth(void)
 	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 1.0);
 	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 70.0);
 
-	glEnable(GL_LIGHTING);
+	
+    if(!luzes){
+    glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	glEnable(GL_COLOR_MATERIAL);
+
+    }else{
+    	glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+    }
+    glEnable(GL_COLOR_MATERIAL);
 }
 
 void RenderScene(void)
@@ -532,13 +551,9 @@ void keyboard(unsigned char key, int x, int y)
 		glutPostRedisplay();
 		break;
 	case 'l':
-		ligth();
+		luzes = !luzes;
+        ligth();
 		break;
-	case 'c':
-
-		glEnable(GL_LIGHT1);
-		break;
-
 	case 27:
 		exit(0);
 		break;
@@ -579,14 +594,22 @@ void init()
 
 #ifdef GL_VERSION_1_1
    glGenTextures(1, &texName);
-   glBindTexture(GL_TEXTURE_1D, texName);
+   glBindTexture(GL_TEXTURE_2D, texName);
 #endif
    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+   
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, stripeImageWidth, 0,
                 GL_RGBA, GL_UNSIGNED_BYTE, stripeImage);
+                
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, checkImageWidth, checkImageHeight,
+				 0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
 
    currentCoeff = xequalzero;
    currentGenMode = GL_OBJECT_LINEAR;
@@ -594,7 +617,7 @@ void init()
    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, currentGenMode);
    glTexGenfv(GL_S, currentPlane, currentCoeff);
 
-   glEnable(GL_TEXTURE_GEN_S);
+
    glEnable(GL_AUTO_NORMAL);
    glEnable(GL_NORMALIZE);
    glFrontFace(GL_CW);
