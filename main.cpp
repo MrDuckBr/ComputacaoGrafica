@@ -31,8 +31,8 @@ float x = 4.0f, z = 3.0f, y = 2.0f;
 void drawRobot(void)
 {
 
-	glTranslatef(2.0, 2.0, 2.0);
-
+	glTranslatef(4.0, 2.0, 2.0);
+	glScalef(1,1,1);
 	glPushMatrix(); //corpo
 	glScalef(2.0, 3.0, 1.0);
 	glutWireCube(1.0);
@@ -299,11 +299,7 @@ void drawBed(void)
 void ligth(void)
 {
 
-	/* 
-    >> 
-    >> glEnable(GL_LIGHTING);
-    >> glEnable(GL_LIGHT0);
-*/
+	
 
 	GLfloat lightDiffuse[] = {1.0f, 1.0f, 0.0f, 1.0f}; // amarelo difuso: cor onde a luz atinge diretamente a superfície do objeto
 	GLfloat lightAmbient[] = {0.0f, 0.0f, 0.0f, 0.1f}; // ambiente vermelho: cor aplicada em todos os lugares
@@ -315,14 +311,14 @@ void ligth(void)
 	//glLightfv (GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
 	// Posição da luz
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-	glEnable(GL_LIGHT0);
+	
 
-	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direction);
-	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 1.0);
-	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 70.0);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, direction);
+	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 1.0);
+	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 70.0);
 
 	glEnable(GL_LIGHTING);
-
+	glEnable(GL_LIGHT0);
 	glEnable(GL_COLOR_MATERIAL);
 }
 
@@ -346,7 +342,7 @@ void RenderScene(void)
 	drawHouse();
 	drawArmario();
 	drawBed();
-	// drawRobot();
+	 drawRobot();
 
 	glutSwapBuffers();
 }
