@@ -1,31 +1,30 @@
 #include <GL/glut.h>
 #include <math.h>
-
-
 #define	stripeImageWidth 32
 GLubyte stripeImage[4*stripeImageWidth];
 
 #ifdef GL_VERSION_1_1
 static GLuint texName;
 #endif
-
+/*Variaveis responsaveis pelo robo*/
 GLfloat horzangle = -45.0, vertangle = 30.0, distance = -3.0;
 static int shoulder = -50, elbow = 310, fist = 0, finger2 = -46, finger = -46;
 GLuint texture;
-
-bool teste = false;
-
+bool luzes = false;
+/*Variaveis estáticas onde são definidas as cores dos materiais de alguns objetos*/
 static float veggfarge[] = {0.9, 0.9, 0.9, 1};
 static float rod[] = {0.5, 0, 0};
 static float madeira[] = {0.222, 0.184, 0.135};
 
-// angle of rotation for the camera direction
+/*Angulo de rotação da camera*/
 float angle = 0.0;
-// actual vector representing the camera's direction
+/*Vetor que representa a direção da camera*/
 float lx = 0.0f, lz = -1.0f, ly = 0.0f;
-// XZ position of the camera
+/*Posição inicial da camera*/
 float x = 4.0f, z = 4.5f, y = 2.0f;
 
+
+/*Método responsável pela geração da textura*/
 void makeStripeImage(void)
 {
    int j;
@@ -38,13 +37,14 @@ void makeStripeImage(void)
    }
 }
 
-/*  planes for texture coordinate generation  */
+/*  Valores estaticos de coordenadas para a geração das texturas  */
 static GLfloat xequalzero[] = {1.0, 0.0, 0.0, 0.0};
 static GLfloat slanted[] = {1.0, 1.0, 1.0, 0.0};
 static GLfloat *currentCoeff;
 static GLenum currentPlane;
 static GLint currentGenMode;
 
+/*Método responsável por desenhar o robo*/
 void drawRobot(void)
 {
 	
@@ -64,8 +64,26 @@ void drawRobot(void)
 	glTranslatef(0, 2.5, 0);
 	glScalef(1.0, 1.0, 1.0);
 	glutSolidSphere(1.0, 20, 16);
+	
+	glPushMatrix();//EYES
+	glTranslatef(-0.5,0.1,0.9);
+	glScalef(0.2,0.2,0.2);
+	glColor3f(1,1,0);
+	glutSolidCube(1);
 	glPopMatrix();
-
+	
+	glPushMatrix();
+	glTranslatef(0.4,0.1,0.9);
+	glScalef(0.2,0.2,0.2);
+	glColor3f(1,1,0);
+	glutSolidCube(1);
+	glPopMatrix();
+	
+	
+	glPopMatrix();
+	
+	
+	glColor3f(0.5f, 0.5f, 0.5f);
 	glPushMatrix();
 	glTranslatef(1.0, 1.3, 0.0);
 	glRotatef((GLfloat)shoulder, 0.0, 0.0, 1.0);
@@ -130,7 +148,6 @@ void drawRobot(void)
 
 	glPopMatrix();
 	
-	//Outro braco
 	
 	glPushMatrix();
 	glTranslatef(-1.0, 1.3, 0.0);
@@ -199,8 +216,6 @@ void drawRobot(void)
 	
 	//Pernas
 	
-	
-	
 	glColor3f(0.5f, 0.5f, 1.0f);
 	glTranslatef(0,-2,0);
     glPushMatrix();
@@ -224,11 +239,10 @@ void drawRobot(void)
     glDisable(GL_TEXTURE_1D);
 }
 
+/*Método responsável por desenhar a casas*/
 void drawHouse(void)
 {
-
 	//  Parede atras
-
 	glBegin(GL_POLYGON);
 	glColor3f(1.0f, 0.1f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
@@ -240,10 +254,9 @@ void drawHouse(void)
 
 	//  Parede lateral sem janela
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, rod);
-	//glMaterialfv(GL_FRONT,GL_AMBIENT,rod);
+
 	glBegin(GL_QUADS); //ok
 	glColor3f(0.5f,1.0f,1.5f);
-	// glNormal3f(-1,0,0); //innvendig
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 8.0f);
 	glVertex3f(0.0f, 8.0f, 8.0f);
@@ -251,6 +264,7 @@ void drawHouse(void)
 	glEnd();
 
 	//  Telhado
+	
 	glBegin(GL_QUAD_STRIP); //ok
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(0.0f, 8.0f, 0.0f);
@@ -292,6 +306,7 @@ void drawHouse(void)
 	glFlush();
 }
 
+/*Método responsável por desenhar o armario*/
 void drawArmario(void)
 {
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, madeira);
@@ -355,6 +370,7 @@ void drawArmario(void)
 	glEnd();
 }
 
+/*Método responsável por desenhar a cama*/
 void drawBed(void)
 {
 	glBegin(GL_QUADS);
@@ -373,12 +389,6 @@ void drawBed(void)
 	glVertex3f(0.0f, 0.0f, 4.5f);
 	glEnd();
 
-//	glEnable(GL_TEXTURE_2D);
-//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-//#ifdef GL_VERSION_1_1
-//	glBindTexture(GL_TEXTURE_2D, texName);
-//#endif
-
 	glBegin(GL_QUADS);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glTexCoord2f(0.0, 0.0);
@@ -391,23 +401,19 @@ void drawBed(void)
 	glVertex3f(0.0f, 1.0f, 4.5f);
 	glEnd();
 	glFlush();
-//	glDisable(GL_TEXTURE_2D);
 }
 
+/*Método responsável por controlar a iluminação no ambiente*/
 void ligth(void)
 {
-
-	
-
-	GLfloat lightDiffuse[] = {1.0f, 1.0f, 0.0f, 1.0f}; // amarelo difuso: cor onde a luz atinge diretamente a superf�cie do objeto
-	GLfloat lightAmbient[] = {0.0f, 0.0f, 0.0f, 0.1f}; // ambiente vermelho: cor aplicada em todos os lugares
+	GLfloat lightDiffuse[] = {1.0f, 0.0f, 0.0f, 1.0f}; 
+	GLfloat lightAmbient[] = {0.0f, 0.0f, 0.0f, 0.1f}; 
 	GLfloat lightPosition[] = {4.5f, 10.0f, 4.5f, 0.0f};
 	GLfloat direction[] = {5.0, 1.0, 5.0};
-	// Componente de luz ambiente
+
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
-	// Componente de luz difusa
-	//glLightfv (GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
-	// Posi��o da luz
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 	
 
@@ -415,18 +421,23 @@ void ligth(void)
 	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 1.0);
 	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 70.0);
 
-	glEnable(GL_LIGHTING);
+
+	if(!luzes){
+			glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	
+	}else{
+		glDisable(GL_LIGHT0);
+			glDisable(GL_LIGHTING);
+	}
 	glEnable(GL_COLOR_MATERIAL);
 }
 
+/*Método principal responsável pela renderização da cena*/
 void RenderScene(void)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	//  glTranslatef(0.0f,0.0f,distance);
-	//  glRotatef(vertangle,1.0f,0.0f,0.0f);
-	//  glRotatef(horzangle,0.0f,1.0f,0.0f);
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -435,15 +446,10 @@ void RenderScene(void)
 			  x + lx, y + ly, z + lz,
 			  0.0f, 2.0f, 0.0f);
 
-	//  Linhas para demonstrar os eixos
-
 	drawHouse();
 	drawArmario();
 	drawBed();
-	
-   
-	 drawRobot();
-
+	drawRobot();
 	glutSwapBuffers();
 }
 
@@ -455,7 +461,7 @@ void ChangeSize(GLsizei width, GLsizei height)
 	gluPerspective(100, width / height, 0.01, 50.0);
 }
 
-
+/*Método responsável pela movimentação da camera utilizando o teclado(setas direcionais)*/
 void KeyboardOptions(int key, int x, int y)
 {
 	float fraction = 0.1f;
@@ -481,12 +487,11 @@ void KeyboardOptions(int key, int x, int y)
 		x -= lx * fraction;
 		z -= lz * fraction;
 	}
-
-	else if (key == 27)
-		exit(0);
 	glutPostRedisplay();
 }
-
+/*
+Método responsável pelos inputs do teclado
+*/
 void keyboard(unsigned char key, int x, int y)
 {
 	switch (key)
@@ -531,14 +536,6 @@ void keyboard(unsigned char key, int x, int y)
 		finger2 = (finger2 - 2) % 360;
 		glutPostRedisplay();
 		break;
-	case 'l':
-		ligth();
-		break;
-	case 'c':
-
-		glEnable(GL_LIGHT1);
-		break;
-
 	case 27:
 		exit(0);
 		break;
@@ -547,28 +544,35 @@ void keyboard(unsigned char key, int x, int y)
 	}
 	glutPostRedisplay();
 }
+
+/* Iteração com o mouse, onde é usado para acender e apagar a luz*/
 void MouseOptions(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON)
 	{
 		if (state == GLUT_UP)
 		{
-			horzangle += 15;
-			RenderScene();
+			
+				luzes = false;
+				ligth();
+		break;
 		}
 	}
 	else if (button == GLUT_RIGHT_BUTTON)
 	{
 		if (state == GLUT_UP)
 		{
-			horzangle -= 15;
-			RenderScene();
+			luzes = true;
+				ligth();
 		}
 	}
 
 	glutPostRedisplay();
 }
 
+/*
+Método responsável pela inicialização das texturas
+*/
 void init()
 { glClearColor (0.0, 0.0, 0.0, 0.0);
    glEnable(GL_DEPTH_TEST);
@@ -607,8 +611,8 @@ int main(int argc, char *argv[])
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGBA);
 	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("OpenGL - Mouse");
-	 init();
+	glutCreateWindow("OpenGL - Comodo c/ Robo");
+	init();
 	glutReshapeFunc(ChangeSize);
 	glutSpecialFunc(KeyboardOptions);
 	glutKeyboardFunc(keyboard);
