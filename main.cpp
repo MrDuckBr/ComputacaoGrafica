@@ -1,7 +1,11 @@
 #include <GL/glut.h>
 #include <math.h>
+
 #define	stripeImageWidth 32
 GLubyte stripeImage[4*stripeImageWidth];
+#define checkImageWidth 64
+#define checkImageHeight 64
+static GLubyte checkImage[checkImageHeight][checkImageWidth][4];
 
 #ifdef GL_VERSION_1_1
 static GLuint texName;
@@ -27,13 +31,23 @@ float x = 4.0f, z = 4.5f, y = 2.0f;
 /*Método responsável pela geração da textura*/
 void makeStripeImage(void)
 {
-   int j;
+   int i, j, c;
     
    for (j = 0; j < stripeImageWidth; j++) {
       stripeImage[4*j] = (GLubyte) ((j>1) ? 191 : 0);
       stripeImage[4*j+1] = (GLubyte) ((j>1) ? 191 : 0);
       stripeImage[4*j+2] = (GLubyte) ((j>1) ? 191 : 0);
       stripeImage[4*j+3] = (GLubyte) 255;
+   }
+   
+   for (i = 0; i < checkImageHeight; i++) {
+      for (j = 0; j < checkImageWidth; j++) {
+         c = ((((i & 0x10) == 0) ^ ((j & 0x10)) == 0)) * 255;
+			checkImage[i][j][0] = (GLubyte)c;
+			checkImage[i][j][1] = (GLubyte)c;
+			checkImage[i][j][2] = (GLubyte)c;
+			checkImage[i][j][3] = (GLubyte)255;
+      }
    }
 }
 
@@ -47,10 +61,10 @@ static GLint currentGenMode;
 /*Método responsável por desenhar o robo*/
 void drawRobot(void)
 {
-	
 	glEnable(GL_TEXTURE_1D);
-   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBindTexture(GL_TEXTURE_1D, texName);
+	glEnable(GL_TEXTURE_GEN_S);
 
 	glColor3f(0.5f, 0.5f, 0.5f);
 	glTranslatef(5.0, 2.5, 1.0);
@@ -237,6 +251,7 @@ void drawRobot(void)
     glPopMatrix();
     
     glDisable(GL_TEXTURE_1D);
+	 glDisable(GL_TEXTURE_GEN_S);
 }
 
 /*Método responsável por desenhar a casas*/
@@ -389,6 +404,12 @@ void drawBed(void)
 	glVertex3f(0.0f, 0.0f, 4.5f);
 	glEnd();
 
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+#ifdef GL_VERSION_1_1
+	glBindTexture(GL_TEXTURE_2D, texName);
+#endif
+
 	glBegin(GL_QUADS);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glTexCoord2f(0.0, 0.0);
@@ -401,6 +422,7 @@ void drawBed(void)
 	glVertex3f(0.0f, 1.0f, 4.5f);
 	glEnd();
 	glFlush();
+	glDisable(GL_TEXTURE_2D);
 }
 
 /*Método responsável por controlar a iluminação no ambiente*/
@@ -555,7 +577,7 @@ void MouseOptions(int button, int state, int x, int y)
 			
 				luzes = false;
 				ligth();
-		break;
+		
 		}
 	}
 	else if (button == GLUT_RIGHT_BUTTON)
@@ -583,14 +605,22 @@ void init()
 
 #ifdef GL_VERSION_1_1
    glGenTextures(1, &texName);
-   glBindTexture(GL_TEXTURE_1D, texName);
+   glBindTexture(GL_TEXTURE_2D, texName);
 #endif
    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+   
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, stripeImageWidth, 0,
                 GL_RGBA, GL_UNSIGNED_BYTE, stripeImage);
+                
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, checkImageWidth, checkImageHeight,
+				 0, GL_RGBA, GL_UNSIGNED_BYTE, checkImage);
 
    currentCoeff = xequalzero;
    currentGenMode = GL_OBJECT_LINEAR;
@@ -598,7 +628,7 @@ void init()
    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, currentGenMode);
    glTexGenfv(GL_S, currentPlane, currentCoeff);
 
-   glEnable(GL_TEXTURE_GEN_S);
+
    glEnable(GL_AUTO_NORMAL);
    glEnable(GL_NORMALIZE);
    glFrontFace(GL_CW);
