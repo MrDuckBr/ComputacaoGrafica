@@ -1,7 +1,13 @@
 [Editor_0]
+<<<<<<< HEAD
 CursorCol=19
 CursorRow=74
 TopLine=364
+=======
+CursorCol=25
+CursorRow=635
+TopLine=441
+>>>>>>> 12333b2c3a5f4aff1878a5601ca867b7d7390572
 LeftChar=1
 [Editors]
 Order=0
