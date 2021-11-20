@@ -74,13 +74,31 @@ void drawRobot(void)
 	glutSolidCube(1.0);
 	glPopMatrix();
 
-	glPushMatrix(); //cabe?a
-	glTranslatef(0, 2.5, 0);
-	glScalef(1.0, 1.0, 1.0);
-	glutSolidSphere(1.0, 20, 16);
-	glPopMatrix();
+glPushMatrix(); //cabe?a
+    glTranslatef(0, 2.5, 0);
+    glScalef(1.0, 1.0, 1.0);
+    glutSolidSphere(1.0, 20, 16);
+
+    glPushMatrix();//EYES
+    glTranslatef(-0.5,0.1,0.9);
+    glScalef(0.2,0.2,0.2);
+    glColor3f(1,1,0);
+    glutSolidCube(1);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.4,0.1,0.9);
+    glScalef(0.2,0.2,0.2);
+    glColor3f(1,1,0);
+    glutSolidCube(1);
+    glPopMatrix();
+
+
+    glPopMatrix();
+    
 
 	glPushMatrix();
+	glColor3f(0.5f, 0.5f, 0.5f);
 	glTranslatef(1.0, 1.3, 0.0);
 	glRotatef((GLfloat)shoulder, 0.0, 0.0, 1.0);
 	glTranslatef(1.0, 0.0, 0.0);
